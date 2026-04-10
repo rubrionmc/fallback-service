@@ -16,6 +16,7 @@
 package net.rubrion.server.fallback;
 
 import de.leycm.init4j.instance.Instanceable;
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
@@ -35,9 +36,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 
-@Getter
+@Getter @Slf4j
 public class FallbackInstance implements Instanceable {
-
 
     public static @NonNull FallbackInstance getInstance() {
         return Instanceable.getInstance(FallbackInstance.class);
@@ -74,13 +74,13 @@ public class FallbackInstance implements Instanceable {
         packetHandler.setListener(ConnectionState.HANDSHAKE, ClientHandshakePacket.class, this::handleHandshakePacket);
         eventHandler.addListener(ServerListPingEvent.class, this::handleServerListPing);
 
-        System.out.println("Starting fallback server on port " + startPort + " with domain suffix " + domainSuffix);
-
+        log.info("Starting fallback server on port {} with domain suffix {}", startPort, domainSuffix);
         server.start("0.0.0.0", startPort);
     }
 
     @Override
     public void onUninstall() {
+        log.info("Shoutdown fallback server on port {} with domain suffix {}", startPort, domainSuffix);
         MinecraftServer.stopCleanly();
     }
 
@@ -93,7 +93,6 @@ public class FallbackInstance implements Instanceable {
 
         // note: hide from server scener by only accepting domain connections
         if (!packet.serverAddress().endsWith(domainSuffix)) {
-            System.out.println("Rejecting connection from " + packet.serverAddress() + " because it does not end with " + domainSuffix);
             try { socketConnection.getChannel().close(); }
             catch (IOException _) { }
             return;
