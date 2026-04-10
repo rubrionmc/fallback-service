@@ -22,18 +22,19 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "rubrion fallback")
 public class FallbackPodCommand implements Runnable{
 
-    @SuppressWarnings("FieldMayBeFinal") // cause: this is a command arg
+    @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"}) // cause: this is a command arg
     @CommandLine.Option(names = {"-d", "--domain"}, description = "the domain name of the server, e.g. rubrion.net")
     private String domain = "host";
 
-    @SuppressWarnings("FieldMayBeFinal") // cause: this is a command arg
+    @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"}) // cause: this is a command arg
     @CommandLine.Option(names = {"-p", "--port"}, description = "the port to open an Minecraft server socket on")
     private int port = 25565;
 
-    private final FallbackInstance instance = new FallbackInstance(domain, port);
+    private FallbackInstance instance;
 
     @Override
     public void run() {
+        instance = new FallbackInstance(domain, port);
         Instanceable.register(instance, FallbackInstance.class);
     }
 
