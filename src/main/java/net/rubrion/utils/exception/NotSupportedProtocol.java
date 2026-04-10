@@ -33,4 +33,10 @@ public class NotSupportedProtocol extends RuntimeException {
                         " (available: " + versions + ")");
     }
 
+
+    public NotSupportedProtocol(int protocol, int lowest) {
+        super("ProtocolOptional: No value registered for protocol " + protocol +
+                " (lowest supported: " + lowest + ")");
+    }
+
 }

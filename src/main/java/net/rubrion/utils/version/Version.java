@@ -13,7 +13,7 @@
  *
  * Copyright (c) 2024 Rubrion Group. All rights reserved.
  */
-package net.rubrion.utils.protocol;
+package net.rubrion.utils.version;
 
 import lombok.Getter;
 import lombok.NonNull;

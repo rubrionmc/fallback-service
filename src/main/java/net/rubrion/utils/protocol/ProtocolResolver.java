@@ -16,23 +16,27 @@
 package net.rubrion.utils.protocol;
 
 import net.rubrion.utils.exception.NotSupportedProtocol;
+import net.rubrion.utils.protocol.resolver.SimpleProtocolResolver;
 
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
 import java.util.function.Supplier;
 
 public interface ProtocolResolver<T> {
 
+    static @NonNull <T> SimpleProtocolResolver<T> with(final @NonNull T value) {
+        return SimpleProtocolResolver.with(value);
+    }
+
     @Nullable T resolveOrNull(int protocol);
 
-    @NonNull Set<Integer> supportedProtocols();
+    int lowestSupportedProtocols();
 
     default @NonNull T resolve(int protocol) {
         T value = resolveOrNull(protocol);
         if (value == null) {
-            throw new NotSupportedProtocol(protocol, supportedProtocols());
+            throw new NotSupportedProtocol(protocol, lowestSupportedProtocols());
         }
         return value;
     }

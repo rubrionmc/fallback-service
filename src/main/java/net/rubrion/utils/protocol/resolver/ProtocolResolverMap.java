@@ -13,7 +13,10 @@
  *
  * Copyright (c) 2024 Rubrion Group. All rights reserved.
  */
-package net.rubrion.utils.protocol;
+package net.rubrion.utils.protocol.resolver;
+
+import net.rubrion.utils.protocol.ProtocolResolver;
+import net.rubrion.utils.version.Version;
 
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,10 +51,8 @@ public class ProtocolResolverMap<I extends ProtocolResolverMap<I, T>, T> impleme
     }
 
     @Override
-    public @NonNull Set<Integer> supportedProtocols() {
-        return Collections.unmodifiableSet(versionMap.keySet());
+    public int lowestSupportedProtocols() {
+        return versionMap.firstKey();
     }
-
-
 
 }

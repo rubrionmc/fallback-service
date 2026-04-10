@@ -13,15 +13,18 @@
  *
  * Copyright (c) 2024 Rubrion Group. All rights reserved.
  */
-package net.rubrion.utils.protocol;
+package net.rubrion.utils.protocol.resolver;
 
 import lombok.NonNull;
+import net.rubrion.utils.version.Version;
 
-public class ProtocolStore<T> extends ProtocolResolverMap<ProtocolStore<T>, T> {
+public class SimpleProtocolResolver<T> extends ProtocolResolverMap<SimpleProtocolResolver<T>, T> {
 
-    public static @NonNull <T> ProtocolStore<T> with(final @NonNull T value) {
-        ProtocolStore<T> resolver = new ProtocolStore<>();
+    public static @NonNull <T> SimpleProtocolResolver<T> with(final @NonNull T value) {
+        SimpleProtocolResolver<T> resolver = new SimpleProtocolResolver<>();
         return resolver.since(Version.EXISTENCE, value);
     }
+
+    private SimpleProtocolResolver() { }
 
 }

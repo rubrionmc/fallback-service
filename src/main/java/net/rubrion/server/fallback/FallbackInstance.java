@@ -16,7 +16,6 @@
 package net.rubrion.server.fallback;
 
 import de.leycm.init4j.instance.Instanceable;
-import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
@@ -28,6 +27,7 @@ import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.network.player.PlayerSocketConnection;
 import net.minestom.server.ping.Status;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.NonNull;
 import lombok.Getter;
 
