@@ -74,7 +74,7 @@ public class FallbackInstance implements Instanceable {
         packetHandler.setListener(ConnectionState.HANDSHAKE, ClientHandshakePacket.class, this::handleHandshakePacket);
         eventHandler.addListener(ServerListPingEvent.class, this::handleServerListPing);
 
-        System.out.println("Starting fallback server on port " + startPort);
+        System.out.println("Starting fallback server on port " + startPort + " with domain suffix " + domainSuffix);
 
         server.start("0.0.0.0", startPort);
     }
