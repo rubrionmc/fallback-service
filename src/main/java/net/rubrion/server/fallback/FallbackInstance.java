@@ -57,7 +57,6 @@ public class FallbackInstance implements Instanceable {
             final MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(PlayerSocketConnection.class, MethodHandles.lookup());
             protocolHandle = lookup.unreflectVarHandle(field);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
             throw new ExceptionInInitializerError("Failed to init protocolVersion field");
         }
     }
@@ -74,6 +73,8 @@ public class FallbackInstance implements Instanceable {
 
         packetHandler.setListener(ConnectionState.HANDSHAKE, ClientHandshakePacket.class, this::handleHandshakePacket);
         eventHandler.addListener(ServerListPingEvent.class, this::handleServerListPing);
+
+        System.out.println("Starting fallback server on port " + startPort);
 
         server.start("0.0.0.0", startPort);
     }

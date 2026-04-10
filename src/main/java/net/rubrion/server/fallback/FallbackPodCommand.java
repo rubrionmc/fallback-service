@@ -28,7 +28,7 @@ public class FallbackPodCommand implements Runnable{
 
     @SuppressWarnings("FieldMayBeFinal") // cause: this is a command arg
     @CommandLine.Option(names = {"-p", "--port"}, description = "the port to open an Minecraft server socket on")
-    private int port = 8080;
+    private int port = 25565;
 
     private final FallbackInstance instance = new FallbackInstance(domain, port);
 

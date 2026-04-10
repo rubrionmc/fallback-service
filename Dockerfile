@@ -29,7 +29,7 @@ FROM debian:bookworm-slim AS final-dev
 COPY --from=jlink-base /opt/jdk-custom /opt/jdk-custom
 ENV JAVA_HOME=/opt/jdk-custom
 ENV PATH="$JAVA_HOME/bin:$PATH"
-ENV JAVA_OPTS="-Xms512m -Xmx2g --sun-misc-unsafe-memory-access=allow"
+ENV JAVA_OPTS="--sun-misc-unsafe-memory-access=allow"
 COPY build/libs/*.jar /app/server.jar
 COPY --from=start-script /start.sh /start.sh
 EXPOSE 25565
@@ -39,7 +39,7 @@ FROM debian:bookworm-slim AS final-release
 COPY --from=jlink-base /opt/jdk-custom /opt/jdk-custom
 ENV JAVA_HOME=/opt/jdk-custom
 ENV PATH="$JAVA_HOME/bin:$PATH"
-ENV JAVA_OPTS="-Xms512m -Xmx2g --sun-misc-unsafe-memory-access=allow"
+ENV JAVA_OPTS="--sun-misc-unsafe-memory-access=allow"
 COPY --from=builder /app.jar /app/server.jar
 COPY --from=start-script /start.sh /start.sh
 EXPOSE 25565
