@@ -15,8 +15,11 @@
  */
 package net.rubrion.server.fallback;
 
+import de.leycm.i18label4j.Label;
 import de.leycm.init4j.instance.Instanceable;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.server.ServerListPingEvent;
@@ -41,6 +44,19 @@ public class FallbackInstance implements Instanceable {
 
     public static @NonNull FallbackInstance getInstance() {
         return Instanceable.getInstance(FallbackInstance.class);
+    }
+
+    private static String capitalizeFirstLetter(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+
+        StringBuilder sb = new StringBuilder(str);
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+        for (int i = 1; i < sb.length(); i++) {
+            sb.setCharAt(i, Character.toLowerCase(sb.charAt(i)));
+        }
+        return sb.toString();
     }
 
     private final @NonNull VarHandle protocolHandle;
@@ -92,7 +108,7 @@ public class FallbackInstance implements Instanceable {
         if (!(connection instanceof PlayerSocketConnection socketConnection)) return;
 
         // note: hide from server scener by only accepting domain connections
-        if (!packet.serverAddress().endsWith(domainSuffix)) {
+        if (!packet.serverAddress().toLowerCase().endsWith(domainSuffix.toLowerCase())) {
             try { socketConnection.getChannel().close(); }
             catch (IOException _) { }
             return;
@@ -111,9 +127,28 @@ public class FallbackInstance implements Instanceable {
     }
 
     private void handleServerListPing(final @NonNull ServerListPingEvent event) {
+        final Status.PlayerInfo playerInfo = Status.PlayerInfo.builder()
+                .onlinePlayers(0)
+                .maxPlayers(0)
+                .sample("§fNo Connection Found!")
+                .sample("§7Fail to connect you to")
+                .sample("§7a healthy §fRubrion §7server.")
+                .build();
+
+        final Status.VersionInfo versionInfo = new Status.VersionInfo(
+                "§70§8/§40§r",
+                -1);
+
+        final Component description = Component.empty()
+                .append(Component.text(capitalizeFirstLetter(domainSuffix), TextColor.color(0xff0000)))
+                .append(Component.text(Label.of("tip.rubrion.motd.helloworld").rawOfDefault(), NamedTextColor.GRAY));
+                // todo: add more and moment depending tips
+
         // note: catching ordinal 1
         event.setStatus(Status.builder()
-                .description(Component.text("A Fallback Server"))
+                .playerInfo(playerInfo)
+                .versionInfo(versionInfo)
+                .description(description)
                 .build());
     }
 }

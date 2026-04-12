@@ -16,7 +16,10 @@
 package net.rubrion.utils.protocol;
 
 import net.rubrion.utils.exception.NotSupportedProtocol;
+import net.rubrion.utils.protocol.resolver.ComponentProtocolResolver;
 import net.rubrion.utils.protocol.resolver.SimpleProtocolResolver;
+
+import net.kyori.adventure.text.Component;
 
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,30 +32,33 @@ public interface ProtocolResolver<T> {
         return SimpleProtocolResolver.with(value);
     }
 
+    static @NonNull ComponentProtocolResolver component(final @NonNull Component value) {
+        return ComponentProtocolResolver.with(value);
+    }
+
     @Nullable T resolveOrNull(int protocol);
 
     int lowestSupportedProtocols();
 
-    default @NonNull T resolve(int protocol) {
+    default @NonNull T resolve(final int protocol) {
         T value = resolveOrNull(protocol);
-        if (value == null) {
-            throw new NotSupportedProtocol(protocol, lowestSupportedProtocols());
-        }
+        if (value == null) throw new NotSupportedProtocol(protocol,
+                lowestSupportedProtocols());
+
         return value;
     }
 
     default <E extends Throwable> @NonNull T resolveOrThrow(
-            int protocol,
-            @NonNull Supplier<E> supplier
+            final int protocol,
+            final @NonNull Supplier<E> supplier
     ) throws E {
         T value = resolveOrNull(protocol);
-        if (value == null) {
-            throw supplier.get();
-        }
+        if (value == null) throw supplier.get();
+
         return value;
     }
 
-    default boolean has(int protocol) {
+    default boolean has(final int protocol) {
         return resolveOrNull(protocol) != null;
     }
 }
