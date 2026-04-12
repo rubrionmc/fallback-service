@@ -33,6 +33,8 @@ import net.minestom.server.ping.Status;
 import lombok.extern.slf4j.Slf4j;
 import lombok.NonNull;
 import lombok.Getter;
+import net.rubrion.utils.protocol.ProtocolResolver;
+import net.rubrion.utils.version.Version;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -127,6 +129,8 @@ public class FallbackInstance implements Instanceable {
     }
 
     private void handleServerListPing(final @NonNull ServerListPingEvent event) {
+        if (event.getConnection() == null) return;
+        int protocolVersion = event.getConnection().getProtocolVersion();
         final Status.PlayerInfo playerInfo = Status.PlayerInfo.builder()
                 .onlinePlayers(0)
                 .maxPlayers(0)
@@ -139,8 +143,14 @@ public class FallbackInstance implements Instanceable {
                 "§70§8/§40§r",
                 -1);
 
+        final ProtocolResolver<String> nAString = ProtocolResolver.with("N/A")
+                .since(Version.V1_16_0, "ɴ/ᴀ");
+
         final Component description = Component.empty()
                 .append(Component.text(capitalizeFirstLetter(domainSuffix), TextColor.color(0xff0000)))
+                .append(Component.space())
+                .append(Component.text(nAString.resolve(protocolVersion), NamedTextColor.DARK_GRAY))
+                .append(Component.newline())
                 .append(Component.text(Label.of("tip.rubrion.motd.helloworld").rawOfDefault(), NamedTextColor.GRAY));
                 // todo: add more and moment depending tips
 
