@@ -44,6 +44,22 @@ import java.lang.reflect.Field;
 @Getter @Slf4j
 public class FallbackInstance implements Instanceable {
 
+    private static final Status.PlayerInfo PLAYER_INFO = Status.PlayerInfo.builder()
+            .onlinePlayers(0)
+            .maxPlayers(0)
+            .sample("§fNo Connection Found!")
+            .sample("§7Fail to connect you to")
+            .sample("§7a healthy §fRubrion §7server.")
+            .build();
+
+
+    private static final Status.VersionInfo VERSION_INFO = new Status.VersionInfo(
+            "§70§8/§40§r",
+            -1);
+
+    private static final ProtocolResolver<String> N_A_STRING = ProtocolResolver.with("N/A")
+            .since(Version.V1_16_0, "ɴ/ᴀ");
+
     public static @NonNull FallbackInstance getInstance() {
         return Instanceable.getInstance(FallbackInstance.class);
     }
@@ -130,34 +146,20 @@ public class FallbackInstance implements Instanceable {
 
     private void handleServerListPing(final @NonNull ServerListPingEvent event) {
         if (event.getConnection() == null) return;
-        int protocolVersion = event.getConnection().getProtocolVersion();
-        final Status.PlayerInfo playerInfo = Status.PlayerInfo.builder()
-                .onlinePlayers(0)
-                .maxPlayers(0)
-                .sample("§fNo Connection Found!")
-                .sample("§7Fail to connect you to")
-                .sample("§7a healthy §fRubrion §7server.")
-                .build();
-
-        final Status.VersionInfo versionInfo = new Status.VersionInfo(
-                "§70§8/§40§r",
-                -1);
-
-        final ProtocolResolver<String> nAString = ProtocolResolver.with("N/A")
-                .since(Version.V1_16_0, "ɴ/ᴀ");
+        final int protocolVersion = event.getConnection().getProtocolVersion();
 
         final Component description = Component.empty()
                 .append(Component.text(capitalizeFirstLetter(domainSuffix), TextColor.color(0xff0000)))
                 .append(Component.space())
-                .append(Component.text(nAString.resolve(protocolVersion), NamedTextColor.DARK_GRAY))
+                .append(Component.text(N_A_STRING.resolve(protocolVersion), NamedTextColor.DARK_GRAY))
                 .append(Component.newline())
                 .append(Component.text(Label.of("tip.rubrion.motd.helloworld").rawOfDefault(), NamedTextColor.GRAY));
                 // todo: add more and moment depending tips
 
         // note: catching ordinal 1
         event.setStatus(Status.builder()
-                .playerInfo(playerInfo)
-                .versionInfo(versionInfo)
+                .playerInfo(PLAYER_INFO)
+                .versionInfo(VERSION_INFO)
                 .description(description)
                 .build());
     }
