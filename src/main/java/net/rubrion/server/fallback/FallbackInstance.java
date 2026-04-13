@@ -57,8 +57,7 @@ public class FallbackInstance implements Instanceable {
 
 
     private static final Status.VersionInfo VERSION_INFO = new Status.VersionInfo(
-            "§70§8/§40§r",
-            -1);
+            "§70§8/§40§r", -1);
 
     private static final ProtocolResolver<String> N_A_STRING = ProtocolResolver.with("N/A")
             .since(Version.V1_16_0, "ɴ/ᴀ");
