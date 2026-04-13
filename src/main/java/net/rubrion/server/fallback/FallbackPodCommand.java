@@ -22,6 +22,7 @@ import de.leycm.i18label4j.mapping.MappingRule;
 import de.leycm.i18label4j.serializer.KyoriAdventureSerializer;
 import de.leycm.i18label4j.source.DirSource;
 import de.leycm.init4j.instance.Instanceable;
+
 import net.kyori.adventure.text.Component;
 import picocli.CommandLine;
 

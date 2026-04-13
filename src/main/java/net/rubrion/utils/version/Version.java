@@ -184,6 +184,14 @@ public enum Version {
         return this.toSemInt() < other.toSemInt();
     }
 
+    public boolean isNewerThan(final int other) {
+        return this.toSemInt() > other;
+    }
+
+    public boolean isOlderThan(final int other) {
+        return this.toSemInt() < other;
+    }
+
     public static @NonNull Version fromString(final @NonNull String s) {
         final String[] parts = s.split("\\.");
         if (parts.length < 2 || parts.length > 3)

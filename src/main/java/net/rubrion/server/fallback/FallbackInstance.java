@@ -15,11 +15,16 @@
  */
 package net.rubrion.server.fallback;
 
+import net.rubrion.utils.protocol.ProtocolResolver;
+import net.rubrion.utils.version.Version;
+
 import de.leycm.i18label4j.Label;
 import de.leycm.init4j.instance.Instanceable;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.server.ServerListPingEvent;
@@ -33,8 +38,6 @@ import net.minestom.server.ping.Status;
 import lombok.extern.slf4j.Slf4j;
 import lombok.NonNull;
 import lombok.Getter;
-import net.rubrion.utils.protocol.ProtocolResolver;
-import net.rubrion.utils.version.Version;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -144,23 +147,41 @@ public class FallbackInstance implements Instanceable {
         connection.disconnect();
     }
 
+    // note: catching ordinal 1
     private void handleServerListPing(final @NonNull ServerListPingEvent event) {
         if (event.getConnection() == null) return;
         final int protocolVersion = event.getConnection().getProtocolVersion();
+
+        final Label motdTip = getMotdTipSafely(event, protocolVersion);
 
         final Component description = Component.empty()
                 .append(Component.text(capitalizeFirstLetter(domainSuffix), TextColor.color(0xff0000)))
                 .append(Component.space())
                 .append(Component.text(N_A_STRING.resolve(protocolVersion), NamedTextColor.DARK_GRAY))
                 .append(Component.newline())
-                .append(Component.text(Label.of("tip.rubrion.motd.helloworld").rawOfDefault(), NamedTextColor.GRAY));
-                // todo: add more and moment depending tips
+                .append(Component.text(motdTip.rawOfDefault(), NamedTextColor.GRAY));
 
-        // note: catching ordinal 1
         event.setStatus(Status.builder()
                 .playerInfo(PLAYER_INFO)
                 .versionInfo(VERSION_INFO)
                 .description(description)
                 .build());
     }
+
+    private @NonNull Label getMotdTipSafely(final @NonNull ServerListPingEvent event, final int protocolVersion) {
+        try {
+            return handleMotdLabelRequest(event);
+        } catch (Exception e) {
+            log.error("Failed to get MOTD tip for protocol version {}, using default", protocolVersion, e);
+            return Label.literal("Ups you crashed the Fallback");
+        }
+    }
+
+    private @NonNull Label handleMotdLabelRequest(final @NonNull ServerListPingEvent event) {
+        if (event.getConnection() == null) return Label.of("tip.rubrion.motd.try.1_8");
+        final int protocolVersion = event.getConnection().getProtocolVersion();
+        if (Version.V1_8_0.isNewerThan(protocolVersion)) return Label.of("tip.rubrion.motd.try.1_8");
+        return Label.of("tip.rubrion.motd.gen.helloworld");
+    }
+
 }
