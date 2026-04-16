@@ -184,12 +184,12 @@ public enum Version {
         return this.toSemInt() < other.toSemInt();
     }
 
-    public boolean isNewerThan(final int other) {
-        return this.toSemInt() > other;
+    public boolean isNewerThan(final int protocol) {
+        return this.protocol > protocol;
     }
 
-    public boolean isOlderThan(final int other) {
-        return this.toSemInt() < other;
+    public boolean isOlderThan(final int protocol) {
+        return this.protocol < protocol;
     }
 
     public static @NonNull Version fromString(final @NonNull String s) {
